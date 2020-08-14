@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sjlw.dao.IReaderDao">
+    <select id="findReaderByUsername" parameterType="long" resultType="reader">
+        select * from reader_card where readerId=#{readerId}
+    </select>
+    <select id="findAllBook" resultType="book">
+        select * from book_info
+    </select>
+    <update id="lendbookById" parameterType="long">
+        UPDATE book_info SET number = number-1 where bookId=#{bookId}
+    </update>
+    <insert id="lendbookUpdata" parameterType="long">
+        insert into lend_list values
+        (null , #{bookId} , #{readerId} , sysdate() , null)
+    </insert>
+    <update id="returnBook" parameterType="long">
+         UPDATE book_info SET number = number+1 where bookId=#{bookId}
+    </update>
+    <update id="returnBookUpdata" >
+        update lend_list set backDate = sysdate() where bookId = #{bookId}
+        and readerId = #{readerId} and backDate is null
+    </update>
+    <select id="myLendList" resultType="Lend" parameterType="long">
+        select * from lend_list where readerId = #{readerId}
+    </select>
+    <select id="getBook" resultType="Book" parameterType="long">
+        select * from book_info where bookId = #{bookId}
+    </select>
+    <select id="findReaderInfoByReaderId" resultType="com.sjlw.bean.ReaderInfo" parameterType="long">
+        select * from reader_info where readerId = #{readerId}
+    </select>
+    <select id="findReaderByReaderId" resultType="com.sjlw.bean.Reader" parameterType="long">
+        select * from reader_card where readerId = #{readerId}
+    </select>
+    <update id="editReaderInfo" parameterType="com.sjlw.bean.ReaderInfo">
+        update reader_info set name = #{name} , sex = #{sex},
+        birth = #{birth} ,address = #{address} ,phone = #{phone}
+        where readerId = #{readerId}
+    </update>
+    <update id="editReader" parameterType="com.sjlw.bean.ReaderInfo">
+        update reader_card set username = #{name}
+        where readerId = #{readerId}
+    </update>
+    <select id="getMatchCount" resultType="int">
+        select count(*) from admin
+        where adminId = #{adminId}
+        and password = #{password}
+    </select>
+    <select id="getIdMatchCount" resultType="int">
+        select count(*) from reader_card where
+        readerId = #{readerId} and password = #{password}
+    </select>
+    <select id="getUsername" resultType="String" parameterType="long">
+        select username from admin where adminId = #{adminId}
+    </select>
+    <update id="resetPassword">
+        update reader_card set password = #{newPassword}
+        where readerId = #{readerId}
+    </update>
+    <select id="getPassword" resultType="String" parameterType="long">
+        select password from reader_card where readerId = #{readerId}
+    </select>
+</mapper>
